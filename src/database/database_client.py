@@ -1,5 +1,5 @@
 from pymongo import MongoClient
-
+from config import BaseConfig
 class DatabaseClient:
     def __init__(self, host, port):
         self.client = MongoClient(host, port)
@@ -17,3 +17,17 @@ class DatabaseClient:
 
     def delete(self, query):
         self.collection.delete_one(query)
+
+def add_data_to_database():
+    #! Wait Reaw data from Reaw
+    
+    pass
+
+def main():
+    config = BaseConfig()
+    host = config['Database']['Host']
+    port = config['Database']['Port']
+    client = DatabaseClient(host, port)
+    pass
+
+
