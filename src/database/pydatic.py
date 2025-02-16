@@ -4,8 +4,9 @@ from typing import List
 from pymongo import MongoClient
 
 
-password = '1q2w3e4r'
-client = MongoClient("mongodb+srv://reaw:{0}@test.4hnwy.mongodb.net/".format(password))
+password = '------------'
+usr = '-------'
+client = MongoClient("mongodb+srv://{0}:{1}@test.4hnwy.mongodb.net/".format(usr,password))
 print(client.list_database_names())
 db = client["mydatabase"]
 
