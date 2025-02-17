@@ -3,6 +3,9 @@ from pydantic import BaseModel, Field, field_validator, HttpUrl
 from typing import List
 from pymongo import MongoClient
 
+client = MongoClient()
+db = client["mydatabase"]
+
 class CPU(BaseModel):
     cpu_id : int = Field(..., description="CPU ID must start with 1 and have 5 digits")
     title: str = Field(..., min_length=1, description="CPU title cannot be empty")
