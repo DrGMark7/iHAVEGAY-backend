@@ -6,9 +6,10 @@ import json
 import pandas as pd
 from pathlib import Path
 from typing import List, Union, Dict
-from pymongo import MongoClient
-
 from config import BaseConfig
+from datamodel import CPU, Ram, Mainboard, SSD, M2, GPU, Case, PSU
+from config import BaseConfig
+
 
 def add_data_to_database():
     
