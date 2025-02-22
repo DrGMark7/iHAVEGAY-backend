@@ -1,5 +1,6 @@
 from pymongo import MongoClient
 from config import BaseConfig
+
 class DatabaseClient:
     def __init__(self, host, port):
         self.client = MongoClient(host, port)

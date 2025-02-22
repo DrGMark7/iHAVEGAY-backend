@@ -2,12 +2,6 @@ import json
 import os
 from pydantic import BaseModel, Field, field_validator, HttpUrl
 from typing import List
-from pymongo import MongoClient
-from dotenv import load_dotenv
-load_dotenv()
-mongo_uri = os.getenv("MONGO_URI")
-client = MongoClient(mongo_uri)
-db = client["mydatabase"]
 
 class CPU(BaseModel):
     cpu_id : int = Field(..., description="CPU ID must start with 1 and have 5 digits")
@@ -39,7 +33,7 @@ class Ram(BaseModel):
         if not(20000 < value <= 29999):
             raise ValueError('Ram ID must start with 2 and have 5 digits')
         return value
-    
+
 class Mainboard(BaseModel):
     mainboard_id: int = Field(..., description="Mainboard ID must start with 3 and have 5 digits")
     title: str = Field(..., min_length=1, description="Mainboard title cannot be empty")
@@ -130,3 +124,4 @@ class PSU(BaseModel):
         if not(70000 < value <= 79999):
             raise ValueError('PSU ID must start with 5 and have 5 digits')
         return value
+
