@@ -9,7 +9,7 @@ from typing import List, Union, Dict
 from config import BaseConfig
 from datamodel import CPU, Ram, Mainboard, SSD, M2, GPU, Case, PSU
 from config import BaseConfig
-
+from database import Database
 
 def add_data_to_database():
     
@@ -23,14 +23,14 @@ def add_data_to_database():
 
 class HardwareManager:
     def __init__(self):
-        self.CPU_collection = db['CPUs']
-        self.Ram_collection = db['Rams']
-        self.Mainboard_collection = db['Mainboards']
-        self.SSD_collection = db['SSDs']
-        self.M2_collection = db['M2s']
-        self.GPU_collection = db['GPUs']
-        self.Case_collection = db['Cases']
-        self.PSU_collection = db['PSUs']
+        self.CPU_collection = Database.get_collection('CPUs')
+        self.Ram_collection = Database.get_collection('Rams')
+        self.Mainboard_collection = Database.get_collection('Mainboards')
+        self.SSD_collection = Database.get_collection('SSDs')
+        self.M2_collection = Database.get_collection('M2s')
+        self.GPU_collection = Database.get_collection('GPUs')
+        self.Case_collection = Database.get_collection('Cases')
+        self.PSU_collection = Database.get_collection('PSUs')
     
     def add_cpu(self, cpu_file_path):
         try:
@@ -53,7 +53,7 @@ class HardwareManager:
 
         if valid_cpus:
             self.CPU_collection.insert_many(valid_cpus)
-            print(f"Inserted {len(valid_cpus)} cpus into MongoDB.")
+            print(f"Inserted {len(valid_cpus)} cpus into MongoDatabase.get_collection(")
     
     def add_ram(self, ram_file_path):
         try:
@@ -81,7 +81,7 @@ class HardwareManager:
 
         if valid_rams:
             self.Ram_collection.insert_many(valid_rams)
-            print(f"Inserted {len(valid_rams)} rams into MongoDB.")
+            print(f"Inserted {len(valid_rams)} rams into MongoDatabase.get_collection(")
     
     def add_mainboard(self, mainboard_file_path):
         try:
@@ -103,7 +103,7 @@ class HardwareManager:
 
         if valid_mbs:
             self.Mainboard_collection.insert_many(valid_mbs)
-            print(f"Inserted {len(valid_mbs)} Mainboard into MongoDB.")
+            print(f"Inserted {len(valid_mbs)} Mainboard into MongoDatabase.get_collection(")
 
     def add_ssd(self, ssd_file_path):
         try:
@@ -127,7 +127,7 @@ class HardwareManager:
 
         if valid_ssds:
             self.SSD_collection.insert_many(valid_ssds)
-            print(f"Inserted {len(valid_ssds)} SSD into MongoDB.")
+            print(f"Inserted {len(valid_ssds)} SSD into MongoDatabase.get_collection(")
 
     def add_m2(self, m2_file_path):
             try:
@@ -151,7 +151,7 @@ class HardwareManager:
 
             if valid_m2s:
                 self.M2_collection.insert_many(valid_m2s)
-                print(f"Inserted {len(valid_m2s)} M2 into MongoDB.")
+                print(f"Inserted {len(valid_m2s)} M2 into MongoDatabase.get_collection(")
 
     def add_gpu(self, gpu_file_path):
             try:
@@ -174,7 +174,7 @@ class HardwareManager:
 
             if valid_gpus:
                 self.GPU_collection.insert_many(valid_gpus)
-                print(f"Inserted {len(valid_gpus)} GPU into MongoDB.")
+                print(f"Inserted {len(valid_gpus)} GPU into MongoDatabase.get_collection(")
 
     def add_case(self, case_file_path):
         try:
@@ -201,7 +201,7 @@ class HardwareManager:
 
         if valid_cases:
             self.Case_collection.insert_many(valid_cases)
-            print(f"Inserted {len(valid_cases)} case into MongoDB.")
+            print(f"Inserted {len(valid_cases)} case into MongoDatabase.get_collection(")
 
     def add_psu(self, psu_file_path):
         try:
@@ -225,4 +225,4 @@ class HardwareManager:
 
         if valid_psus:
             self.PSU_collection.insert_many(valid_psus)
-            print(f"Inserted {len(valid_psus)} Psu into MongoDB.")
+            print(f"Inserted {len(valid_psus)} Psu into MongoDatabase.get_collection(")
