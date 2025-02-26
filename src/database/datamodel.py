@@ -1,6 +1,5 @@
-import json
 from pydantic import BaseModel, Field, field_validator, HttpUrl
-from typing import List
+from typing import List, Optional
 from pymongo import MongoClient
 
 client = MongoClient()
@@ -127,3 +126,70 @@ class PSU(BaseModel):
         if not(70000 < value <= 79999):
             raise ValueError('PSU ID must start with 5 and have 5 digits')
         return value
+    
+# use for updating data
+
+class updateCPU(BaseModel):
+    title: Optional[str] = None
+    price: Optional[int] = None
+    Socket: Optional[str] = None
+    brand: Optional[str] = None
+    imgUrl: Optional[str] = None
+
+class updateRam(BaseModel):
+    title: Optional[str] = None
+    price: Optional[int] = None
+    brand: Optional[str] = None
+    memory_type: Optional[str] = None
+    speed: Optional[int] = None
+    number_of_DIMMs: Optional[int] = None
+    capacity_per_DIMM: Optional[int] = None
+    imgUrl: Optional[str] = None
+    
+class updateMainboard(BaseModel):
+    title: Optional[str] = None
+    price: Optional[int] = None
+    memory_type: Optional[str] = None
+    size: Optional[str] = None
+    socket: Optional[str] = None
+    brand: Optional[str] = None
+    imgUrl: Optional[str] = None
+
+class updateSSD(BaseModel):
+    title: Optional[str] = None
+    price: Optional[int] = None
+    brand: Optional[str] = None
+    size_GB: Optional[int] = None
+    imgUrl: Optional[str] = None
+
+class updateM2(BaseModel):
+    title: Optional[str] = None
+    price: Optional[int] = None
+    read: Optional[str] = None
+    write: Optional[str] = None
+    brand: Optional[str] = None
+    capacity: Optional[int] = None
+    imgUrl: Optional[str] = None
+    
+class updateGPU(BaseModel):
+    title: Optional[str] = None
+    price: Optional[int] = None
+    series: Optional[str] = None
+    ram_capacity_GB: Optional[int] = None
+    brand: Optional[str] = None
+    imgUrl: Optional[str] = None
+    
+class updateCase(BaseModel):
+    title: Optional[str] = None
+    price: Optional[int] = None
+    brand: Optional[str] = None
+    support_mb: Optional[List[str]] = None 
+    imgUrl: Optional[str] = None
+    
+class updatePSU(BaseModel):
+    title: Optional[str] = None
+    price: Optional[int] = None
+    Max_Watt: Optional[int] = None
+    brand: Optional[str] = None
+    grade: Optional[int] = None
+    imgUrl: Optional[str] = None

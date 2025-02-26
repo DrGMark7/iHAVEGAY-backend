@@ -10,16 +10,6 @@ from config import BaseConfig
 from src.database.database import Database
 from datamodel import CPU, Ram, Mainboard, SSD, M2, GPU, Case, PSU
 
-def add_data_to_database():
-    
-    config = BaseConfig()
-    host = config['Database']['Host']
-    port = config['Database']['Port']
-    client = MongoClient(host, port)
-    
-    for data in DataParser().read_data():
-        client.insert(data)
-
 class HardwareManager:
     def __init__(self):
         self.CPU_collection = Database.get_collection('CPUs')
@@ -129,51 +119,51 @@ class HardwareManager:
             print(f"Inserted {len(valid_ssds)} SSD into MongoDB.")
 
     def add_m2(self, m2_file_path):
+        try:
+            with open(m2_file_path, 'r', encoding="utf-8") as file:
+                m2_data = json.load(file)
+        except Exception as e:
+            print(f"Error reading file {m2_file_path}: {e}")
+
+        
+        valid_m2s = []
+
+        for m2 in m2_data:
+            if isinstance(m2['price'], str):
+                m2['price'] = int(m2['price'].replace(',', ''))
+                m2['capacity'] = int(float(m2['capacity']))
             try:
-                with open(m2_file_path, 'r', encoding="utf-8") as file:
-                    m2_data = json.load(file)
+                validated_m2 = M2(**m2)
+                valid_m2s.append(validated_m2.model_dump())
             except Exception as e:
-                print(f"Error reading file {m2_file_path}: {e}")
+                print(f"Invalid data: {m2} - Error: {e}")
 
-            
-            valid_m2s = []
-
-            for m2 in m2_data:
-                if isinstance(m2['price'], str):
-                    m2['price'] = int(m2['price'].replace(',', ''))
-                    m2['capacity'] = int(float(m2['capacity']))
-                try:
-                    validated_m2 = M2(**m2)
-                    valid_m2s.append(validated_m2.model_dump())
-                except Exception as e:
-                    print(f"Invalid data: {m2} - Error: {e}")
-
-            if valid_m2s:
-                self.M2_collection.insert_many(valid_m2s)
-                print(f"Inserted {len(valid_m2s)} M2 into MongoDB.")
+        if valid_m2s:
+            self.M2_collection.insert_many(valid_m2s)
+            print(f"Inserted {len(valid_m2s)} M2 into MongoDB.")
 
     def add_gpu(self, gpu_file_path):
+        try:
+            with open(gpu_file_path, 'r', encoding="utf-8") as file:
+                gpu_data = json.load(file)
+        except Exception as e:
+            print(f"Error reading file {gpu_file_path}: {e}")
+
+        
+        valid_gpus = []
+
+        for gpu in gpu_data:
+            if isinstance(gpu['price'], str):
+                gpu['price'] = int(gpu['price'].replace(',', ''))
             try:
-                with open(gpu_file_path, 'r', encoding="utf-8") as file:
-                    gpu_data = json.load(file)
+                validated_gpu = GPU(**gpu)
+                valid_gpus.append(validated_gpu.model_dump())
             except Exception as e:
-                print(f"Error reading file {gpu_file_path}: {e}")
+                print(f"Invalid data: {gpu} - Error: {e}")
 
-            
-            valid_gpus = []
-
-            for gpu in gpu_data:
-                if isinstance(gpu['price'], str):
-                    gpu['price'] = int(gpu['price'].replace(',', ''))
-                try:
-                    validated_gpu = GPU(**gpu)
-                    valid_gpus.append(validated_gpu.model_dump())
-                except Exception as e:
-                    print(f"Invalid data: {gpu} - Error: {e}")
-
-            if valid_gpus:
-                self.GPU_collection.insert_many(valid_gpus)
-                print(f"Inserted {len(valid_gpus)} GPU into MongoDB.")
+        if valid_gpus:
+            self.GPU_collection.insert_many(valid_gpus)
+            print(f"Inserted {len(valid_gpus)} GPU into MongoDB.")
 
     def add_case(self, case_file_path):
         try:
