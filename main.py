@@ -1,3 +1,5 @@
+
+#! didnt add function to get by id yet except ram
 import asyncio
 from typing import Optional, List
 from fastapi import FastAPI, APIRouter, HTTPException, Depends
@@ -77,6 +79,16 @@ async def get_Ram():
     if not datas:
         return JSONResponse(status_code=404, content={"message": "No Ram data found"})
     return datas
+
+# get ram by ram_id
+@app.get("/Rams/{ram_id}", response_model=Ram)
+async def getRamByID(ram_id: int):
+    collection = Database.get_collection('Rams')
+    ram = await collection.find_one({"ram_id": ram_id})
+    if ram is None:
+        raise HTTPException(status_code=404, detail="Item not found")
+    
+    return ram
 
 @router.post("/Rams")
 async def add_Ram(Ram: Ram):
@@ -438,7 +450,7 @@ async def update_psu(psu_id: int, psu_update: updatePSU):
 app.include_router(router)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],  # Change to your Vue.js app URL
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
