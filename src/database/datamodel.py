@@ -102,7 +102,7 @@ class Case(BaseModel):
     title: str = Field(..., min_length=1, descrription="Case title cannot be empty")
     price: int = Field(..., ge=0, description="Case price must be non-negative")
     brand: str = Field(..., min_length=1, description="Case brand cannot be empty")
-    support_mb: List[str] = Field(..., min_length=1, description="Support Motherboard cannot be empty")
+    support_mb: List[str] = Field(..., description="Support Motherboard cannot be empty")
     imgUrl: str = Field(..., description="Official website URL")
 
     @field_validator('case_id')
@@ -118,7 +118,7 @@ class PSU(BaseModel):
     Max_Watt: int = Field(..., ge=0, descrription="PSU max watt must be non-negative")
     brand: str = Field(..., min_length=1, description="PSU brand cannot be empty")
     certs: str = Field(..., min_length=1, descrription="PSU certificate cannot be empty")
-    grade: int  = Field(..., ge=0, description="PSU grade must be non-negative")
+    grade: int  = None
     imgUrl: str = Field(..., description="Official website URL")
 
     @field_validator('psu_id')
@@ -185,11 +185,11 @@ class updateCase(BaseModel):
     brand: Optional[str] = None
     support_mb: Optional[List[str]] = None 
     imgUrl: Optional[str] = None
-    
+
 class updatePSU(BaseModel):
     title: Optional[str] = None
-    price: Optional[int] = None
-    Max_Watt: Optional[int] = None
     brand: Optional[str] = None
-    grade: Optional[int] = None
+    price: Optional[float] = None
+    Max_Watt: Optional[int] = None
+    certs: Optional[str] = None
     imgUrl: Optional[str] = None

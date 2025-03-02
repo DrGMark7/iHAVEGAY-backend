@@ -1,5 +1,4 @@
 
-#! didnt add function to get by id yet except ram
 import asyncio
 from typing import Optional, List
 from fastapi import FastAPI, APIRouter, HTTPException, Depends
@@ -26,6 +25,16 @@ async def get_cpu():
     if not datas:
         return JSONResponse(status_code=404, content={"message": "No CPU data found"})
     return datas
+
+# get cpu by cpu_id
+@app.get("/CPUs/{cpu_id}", response_model=CPU)
+async def getCPUByID(cpu_id: int):
+    collection = Database.get_collection('CPUs')
+    cpu = await collection.find_one({"cpu_id": cpu_id})
+    if cpu is None:
+        raise HTTPException(status_code=404, detail="Item not found")
+    
+    return cpu
 
 @router.post("/CPUs")
 async def add_cpu(cpu: CPU):
@@ -143,6 +152,16 @@ async def get_Mainboard():
         return JSONResponse(status_code=404, content={"message": "No Mainboard data found"})
     return datas
 
+# get mainboard by mainboard_id
+@app.get("/Mainboards/{mainboard_id}", response_model=Mainboard)
+async def getMainboardByID(mainboard_id: int):
+    collection = Database.get_collection('Mainboards')
+    mainboard = await collection.find_one({"mainboard_id": mainboard_id})
+    if mainboard is None:
+        raise HTTPException(status_code=404, detail="Item not found")
+    
+    return mainboard
+
 @router.post("/Mainboards")
 async def add_Mainboard(Mainboard: Mainboard):
     collection = Database.get_collection('Mainboards')
@@ -196,6 +215,16 @@ async def get_ssd():
         return JSONResponse(status_code=404, content={"message": "No SSD data found"})
     return datas
 
+# get ssd by ssd_id
+@app.get("/SSDs/{ssd_id}", response_model=SSD)
+async def getSSDByID(ssd_id: int):
+    collection = Database.get_collection('SSDs')
+    ssd = await collection.find_one({"ssd_id": ssd_id})
+    if ssd is None:
+        raise HTTPException(status_code=404, detail="Item not found")
+    
+    return ssd
+
 @router.post("/SSDs")
 async def add_ssd(SSD: SSD):
     collection = Database.get_collection('SSDs')
@@ -207,13 +236,13 @@ async def add_ssd(SSD: SSD):
     
     return {"message": "SSD added successfully", "id": str(result.inserted_id)}
 
-@router.delete("/SSDs/{SSD_id}")
-async def delete_ssd(SSD_id: int):
+@router.delete("/SSDs/{ssd_id}")
+async def delete_ssd(ssd_id: int):
     # delete SSD by SSD_id
     collection = Database.get_collection('SSDs')
-    result = collection.delete_one({'SSD_id': SSD_id})
+    result = collection.delete_one({'ssd_id': ssd_id})
     if result:
-        return {"detail": "Item deleted successfully", "SSD_id": SSD_id}
+        return {"detail": "Item deleted successfully", "ssd_id": ssd_id}
     raise HTTPException(status_code=404, detail="Item not found")
 
 @router.patch("/SSDs/{ssd_id}")
@@ -248,6 +277,16 @@ async def get_m2():
     if not datas:
         return JSONResponse(status_code=404, content={"message": "No M2 data found"})
     return datas
+
+# get m2 by m2_id
+@app.get("/M2s/{m2_id}", response_model=M2)
+async def getM2ByID(m2_id: int):
+    collection = Database.get_collection('M2s')
+    m2 = await collection.find_one({"m2_id": m2_id})
+    if m2 is None:
+        raise HTTPException(status_code=404, detail="Item not found")
+    
+    return m2
 
 @router.post("/M2s")
 async def add_m2(M2: M2):
@@ -302,6 +341,16 @@ async def get_gpu():
         return JSONResponse(status_code=404, content={"message": "No GPU data found"})
     return datas
 
+# get gpu by gpu_id
+@app.get("/GPUs/{gpu_id}", response_model=GPU)
+async def getGPUByID(gpu_id: int):
+    collection = Database.get_collection('GPUs')
+    gpu = await collection.find_one({"gpu_id": gpu_id})
+    if gpu is None:
+        raise HTTPException(status_code=404, detail="Item not found")
+    
+    return gpu
+
 @router.post("/GPUs")
 async def add_gpu(GPU: GPU):
     collection = Database.get_collection('GPUs')
@@ -313,13 +362,13 @@ async def add_gpu(GPU: GPU):
     
     return {"message": "GPU added successfully", "id": str(result.inserted_id)}
 
-@router.delete("/GPUs/{GPU_id}")
-async def delete_gpu(GPU_id: int):
+@router.delete("/GPUs/{gpu_id}")
+async def delete_gpu(gpu_id: int):
     # delete GPU by GPU_id
     collection = Database.get_collection('GPUs')
-    result = collection.delete_one({'GPU_id': GPU_id})
+    result = collection.delete_one({'gpu_id': gpu_id})
     if result:
-        return {"detail": "Item deleted successfully", "GPU_id": GPU_id}
+        return {"detail": "Item deleted successfully", "gpu_id": gpu_id}
     raise HTTPException(status_code=404, detail="Item not found")
 
 @router.patch("/GPUs/{gpu_id}")
@@ -355,6 +404,16 @@ async def get_case():
         return JSONResponse(status_code=404, content={"message": "No Case data found"})
     return datas
 
+# get case by case_id
+@app.get("/Cases/{case_id}", response_model=Case)
+async def getCaseByID(case_id: int):
+    collection = Database.get_collection('Cases')
+    case = await collection.find_one({"case_id": case_id})
+    if case is None:
+        raise HTTPException(status_code=404, detail="Item not found")
+    
+    return case
+
 @router.post("/Cases")
 async def add_case(Case: Case):
     collection = Database.get_collection('Cases')
@@ -366,13 +425,13 @@ async def add_case(Case: Case):
     
     return {"message": "Case added successfully", "id": str(result.inserted_id)}
 
-@router.delete("/Cases/{Case_id}")
-async def delete_case(Case_id: int):
+@router.delete("/Cases/{case_id}")
+async def delete_case(case_id: int):
     # delete Case by Case_id
     collection = Database.get_collection('Cases')
-    result = collection.delete_one({'Case_id': Case_id})
+    result = collection.delete_one({'case_id': case_id})
     if result:
-        return {"detail": "Item deleted successfully", "Case_id": Case_id}
+        return {"detail": "Item deleted successfully", "case_id": case_id}
     raise HTTPException(status_code=404, detail="Item not found")
 
 @router.patch("/Cases/{case_id}")
@@ -408,6 +467,16 @@ async def get_psu():
         return JSONResponse(status_code=404, content={"message": "No PSU data found"})
     return datas
 
+# get psu by psu_id
+@app.get("/PSUs/{psu_id}", response_model=PSU)
+async def getPSUByID(psu_id: int):
+    collection = Database.get_collection('PSUs')
+    psu = await collection.find_one({"psu_id": psu_id})
+    if psu is None:
+        raise HTTPException(status_code=404, detail="Item not found")
+    
+    return psu
+
 @router.post("/PSUs")
 async def add_psu(PSU: PSU):
     collection = Database.get_collection('PSUs')
@@ -419,32 +488,44 @@ async def add_psu(PSU: PSU):
     
     return {"message": "PSU added successfully", "id": str(result.inserted_id)}
 
-@router.delete("/PSUs/{PSU_id}")
-async def delete_psu(PSU_id: int):
+@router.delete("/PSUs/{psu_id}")
+async def delete_psu(psu_id: int):
     # delete PSU by PSU_id
     collection = Database.get_collection('PSUs')
-    result = collection.delete_one({'PSU_id': PSU_id})
+    result = collection.delete_one({'psu_id': psu_id})
     if result:
-        return {"detail": "Item deleted successfully", "PSU_id": PSU_id}
+        return {"detail": "Item deleted successfully", "PSU_id": psu_id}
     raise HTTPException(status_code=404, detail="Item not found")
 
 @router.patch("/PSUs/{psu_id}")
 async def update_psu(psu_id: int, psu_update: updatePSU):
     collection = Database.get_collection('PSUs')
-    if collection is None:
+    existing_psu = await collection.find_one({"psu_id": psu_id})
+    if not existing_psu:
         raise HTTPException(status_code=404, detail="PSU not found")
+    print("Existing PSU:", existing_psu)
     
     update_data = {k: v for k, v in psu_update.model_dump().items() if v is not None}
-
+    print("Update Data:", update_data)
+    
     if not update_data:
         raise HTTPException(status_code=400, detail="No valid fields to update")
+    
+    changes_detected = False
+    for key, value in update_data.items():
+        if existing_psu.get(key) != value:
+            changes_detected = True
+            break
+    
+    if not changes_detected:
+        raise HTTPException(status_code=400, detail="No changes detected in the provided data")
     
     # Update in MongoDB
     result = await collection.update_one({"psu_id": psu_id}, {"$set": update_data})
 
     if result.modified_count == 0:
         raise HTTPException(status_code=400, detail="No changes made")
-
+    
     return {"message": "PSU updated successfully", "updated_fields": update_data}
 
 app.include_router(router)
