@@ -5,17 +5,10 @@ import json
 import pandas as pd
 from pathlib import Path
 from typing import List, Union, Dict
-<<<<<<< HEAD
 from config import BaseConfig
 from datamodel import CPU, Ram, Mainboard, SSD, M2, GPU, Case, PSU
 from config import BaseConfig
 from database import Database
-=======
-from pymongo import MongoClient
-from config import BaseConfig
-from src.database.database import Database
-from datamodel import CPU, Ram, Mainboard, SSD, M2, GPU, Case, PSU
->>>>>>> reaw-dev
 
 class HardwareManager:
     def __init__(self):
@@ -79,7 +72,6 @@ class HardwareManager:
             self.Ram_collection.insert_many(valid_rams)
             print(f"Inserted {len(valid_rams)} rams into MongoDB.")
     
-<<<<<<< HEAD
     for data in DataParser().read_data():
         client.insert(data)
 
@@ -145,8 +137,6 @@ class HardwareManager:
             self.Ram_collection.insert_many(valid_rams)
             print(f"Inserted {len(valid_rams)} rams into MongoDatabase.get_collection(")
     
-=======
->>>>>>> reaw-dev
     def add_mainboard(self, mainboard_file_path):
         try:
             with open(mainboard_file_path, "r", encoding="utf-8") as file:
@@ -167,11 +157,7 @@ class HardwareManager:
 
         if valid_mbs:
             self.Mainboard_collection.insert_many(valid_mbs)
-<<<<<<< HEAD
             print(f"Inserted {len(valid_mbs)} Mainboard into MongoDatabase.get_collection(")
-=======
-            print(f"Inserted {len(valid_mbs)} Mainboard into MongoDB.")
->>>>>>> reaw-dev
 
     def add_ssd(self, ssd_file_path):
         try:
@@ -195,7 +181,6 @@ class HardwareManager:
 
         if valid_ssds:
             self.SSD_collection.insert_many(valid_ssds)
-<<<<<<< HEAD
             print(f"Inserted {len(valid_ssds)} SSD into MongoDatabase.get_collection(")
 
     def add_m2(self, m2_file_path):
@@ -244,56 +229,6 @@ class HardwareManager:
             if valid_gpus:
                 self.GPU_collection.insert_many(valid_gpus)
                 print(f"Inserted {len(valid_gpus)} GPU into MongoDatabase.get_collection(")
-=======
-            print(f"Inserted {len(valid_ssds)} SSD into MongoDB.")
-
-    def add_m2(self, m2_file_path):
-        try:
-            with open(m2_file_path, 'r', encoding="utf-8") as file:
-                m2_data = json.load(file)
-        except Exception as e:
-            print(f"Error reading file {m2_file_path}: {e}")
-
-        
-        valid_m2s = []
-
-        for m2 in m2_data:
-            if isinstance(m2['price'], str):
-                m2['price'] = int(m2['price'].replace(',', ''))
-                m2['capacity'] = int(float(m2['capacity']))
-            try:
-                validated_m2 = M2(**m2)
-                valid_m2s.append(validated_m2.model_dump())
-            except Exception as e:
-                print(f"Invalid data: {m2} - Error: {e}")
-
-        if valid_m2s:
-            self.M2_collection.insert_many(valid_m2s)
-            print(f"Inserted {len(valid_m2s)} M2 into MongoDB.")
-
-    def add_gpu(self, gpu_file_path):
-        try:
-            with open(gpu_file_path, 'r', encoding="utf-8") as file:
-                gpu_data = json.load(file)
-        except Exception as e:
-            print(f"Error reading file {gpu_file_path}: {e}")
-
-        
-        valid_gpus = []
-
-        for gpu in gpu_data:
-            if isinstance(gpu['price'], str):
-                gpu['price'] = int(gpu['price'].replace(',', ''))
-            try:
-                validated_gpu = GPU(**gpu)
-                valid_gpus.append(validated_gpu.model_dump())
-            except Exception as e:
-                print(f"Invalid data: {gpu} - Error: {e}")
-
-        if valid_gpus:
-            self.GPU_collection.insert_many(valid_gpus)
-            print(f"Inserted {len(valid_gpus)} GPU into MongoDB.")
->>>>>>> reaw-dev
 
     def add_case(self, case_file_path):
         try:
@@ -320,11 +255,7 @@ class HardwareManager:
 
         if valid_cases:
             self.Case_collection.insert_many(valid_cases)
-<<<<<<< HEAD
             print(f"Inserted {len(valid_cases)} case into MongoDatabase.get_collection(")
-=======
-            print(f"Inserted {len(valid_cases)} case into MongoDB.")
->>>>>>> reaw-dev
 
     def add_psu(self, psu_file_path):
         try:
@@ -348,8 +279,4 @@ class HardwareManager:
 
         if valid_psus:
             self.PSU_collection.insert_many(valid_psus)
-<<<<<<< HEAD
             print(f"Inserted {len(valid_psus)} Psu into MongoDatabase.get_collection(")
-=======
-            print(f"Inserted {len(valid_psus)} Psu into MongoDB.")
->>>>>>> reaw-dev
