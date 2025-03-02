@@ -71,9 +71,6 @@ class HardwareManager:
         if valid_rams:
             self.Ram_collection.insert_many(valid_rams)
             print(f"Inserted {len(valid_rams)} rams into MongoDB.")
-    
-    for data in DataParser().read_data():
-        client.insert(data)
 
 class HardwareManager:
     def __init__(self):
