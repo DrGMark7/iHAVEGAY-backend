@@ -15,14 +15,14 @@ class CPUController:
 
     async def get_all(self):
         """Get all CPUs from database"""
-        if not self.collection:
+        if self.collection is None:
             await self._init_collection()
         cursor = self.collection.find({}, {"_id": 0})
         return await cursor.to_list(length=None)
 
     async def get_by_id(self, cpu_id: int):
         """Get a CPU by its ID"""
-        if not self.collection:
+        if self.collection is None:
             await self._init_collection()
         cpu = await self.collection.find_one({"cpu_id": cpu_id}, {"_id": 0})
         if not cpu:
@@ -31,7 +31,7 @@ class CPUController:
 
     async def create(self, cpu: CPU):
         """Create a new CPU"""
-        if not self.collection:
+        if self.collection is None:
             await self._init_collection()
         cpu_dict = cpu.model_dump(exclude_none=True)
         result = await self.collection.insert_one(cpu_dict)
@@ -41,7 +41,7 @@ class CPUController:
 
     async def update(self, cpu_id: int, cpu: UpdateCPU):
         """Update an existing CPU"""
-        if not self.collection:
+        if self.collection is None:
             await self._init_collection()
         update_data = cpu.model_dump(exclude_none=True)
         if not update_data:
@@ -58,7 +58,7 @@ class CPUController:
 
     async def delete(self, cpu_id: int):
         """Delete a CPU"""
-        if not self.collection:
+        if self.collection is None:
             await self._init_collection()
         result = await self.collection.delete_one({"cpu_id": cpu_id})
         if result.deleted_count == 0:

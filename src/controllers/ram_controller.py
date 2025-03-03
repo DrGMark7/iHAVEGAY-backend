@@ -15,14 +15,14 @@ class RamController:
 
     async def get_all(self):
         """Get all RAMs from database"""
-        if not self.collection:
+        if self.collection is None:
             await self._init_collection()
         cursor = self.collection.find({}, {"_id": 0})
         return await cursor.to_list(length=None)
 
     async def get_by_id(self, ram_id: int):
         """Get a RAM by its ID"""
-        if not self.collection:
+        if self.collection is None:
             await self._init_collection()
         ram = await self.collection.find_one({"ram_id": ram_id}, {"_id": 0})
         if not ram:
@@ -31,7 +31,7 @@ class RamController:
 
     async def create(self, ram: Ram):
         """Create a new RAM"""
-        if not self.collection:
+        if self.collection is None:
             await self._init_collection()
         ram_dict = ram.model_dump(exclude_none=True)
         result = await self.collection.insert_one(ram_dict)
@@ -41,7 +41,7 @@ class RamController:
 
     async def update(self, ram_id: int, ram: UpdateRam):
         """Update an existing RAM"""
-        if not self.collection:
+        if self.collection is None:
             await self._init_collection()
         update_data = ram.model_dump(exclude_none=True)
         if not update_data:
@@ -58,7 +58,7 @@ class RamController:
 
     async def delete(self, ram_id: int):
         """Delete a RAM"""
-        if not self.collection:
+        if self.collection is None:
             await self._init_collection()
         result = await self.collection.delete_one({"ram_id": ram_id})
         if result.deleted_count == 0:

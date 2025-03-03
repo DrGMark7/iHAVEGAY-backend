@@ -6,7 +6,7 @@ import pandas as pd
 from pathlib import Path
 from typing import List, Union, Dict
 from config import BaseConfig
-from datamodel import CPU, Ram, Mainboard, SSD, M2, GPU, Case, PSU
+from src.models.hardware_models import CPU, Ram, Mainboard, SSD, M2, GPU, Case, PSU
 from config import BaseConfig
 from database import Database
 

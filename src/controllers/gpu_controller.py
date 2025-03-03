@@ -15,14 +15,14 @@ class GPUController:
 
     async def get_all(self):
         """Get all GPUs from database"""
-        if not self.collection:
+        if self.collection is None:
             await self._init_collection()
         cursor = self.collection.find({}, {"_id": 0})
         return await cursor.to_list(length=None)
 
     async def get_by_id(self, gpu_id: int):
         """Get a GPU by its ID"""
-        if not self.collection:
+        if self.collection is None:
             await self._init_collection()
         gpu = await self.collection.find_one({"gpu_id": gpu_id}, {"_id": 0})
         if not gpu:
@@ -31,7 +31,7 @@ class GPUController:
 
     async def create(self, gpu: GPU):
         """Create a new GPU"""
-        if not self.collection:
+        if self.collection is None:
             await self._init_collection()
         gpu_dict = gpu.model_dump(exclude_none=True)
         result = await self.collection.insert_one(gpu_dict)
@@ -41,7 +41,7 @@ class GPUController:
 
     async def update(self, gpu_id: int, gpu: UpdateGPU):
         """Update an existing GPU"""
-        if not self.collection:
+        if self.collection is None:
             await self._init_collection()
         update_data = gpu.model_dump(exclude_none=True)
         if not update_data:
@@ -58,7 +58,7 @@ class GPUController:
 
     async def delete(self, gpu_id: int):
         """Delete a GPU"""
-        if not self.collection:
+        if self.collection is None:
             await self._init_collection()
         result = await self.collection.delete_one({"gpu_id": gpu_id})
         if result.deleted_count == 0:

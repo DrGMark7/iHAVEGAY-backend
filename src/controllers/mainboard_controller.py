@@ -15,14 +15,14 @@ class MainboardController:
 
     async def get_all(self):
         """Get all Mainboards from database"""
-        if not self.collection:
+        if self.collection is None:
             await self._init_collection()
         cursor = self.collection.find({}, {"_id": 0})
         return await cursor.to_list(length=None)
 
     async def get_by_id(self, mainboard_id: int):
         """Get a Mainboard by its ID"""
-        if not self.collection:
+        if self.collection is None:
             await self._init_collection()
         mainboard = await self.collection.find_one({"mainboard_id": mainboard_id}, {"_id": 0})
         if not mainboard:
@@ -31,7 +31,7 @@ class MainboardController:
 
     async def create(self, mainboard: Mainboard):
         """Create a new Mainboard"""
-        if not self.collection:
+        if self.collection is None:
             await self._init_collection()
         mainboard_dict = mainboard.model_dump(exclude_none=True)
         result = await self.collection.insert_one(mainboard_dict)
@@ -41,7 +41,7 @@ class MainboardController:
 
     async def update(self, mainboard_id: int, mainboard: UpdateMainboard):
         """Update an existing Mainboard"""
-        if not self.collection:
+        if self.collection is None:
             await self._init_collection()
         update_data = mainboard.model_dump(exclude_none=True)
         if not update_data:
@@ -58,7 +58,7 @@ class MainboardController:
 
     async def delete(self, mainboard_id: int):
         """Delete a Mainboard"""
-        if not self.collection:
+        if self.collection is None:
             await self._init_collection()
         result = await self.collection.delete_one({"mainboard_id": mainboard_id})
         if result.deleted_count == 0:

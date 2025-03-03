@@ -15,14 +15,14 @@ class PSUController:
 
     async def get_all(self):
         """Get all PSUs from database"""
-        if not self.collection:
+        if self.collection is None:
             await self._init_collection()
         cursor = self.collection.find({}, {"_id": 0})
         return await cursor.to_list(length=None)
 
     async def get_by_id(self, psu_id: int):
         """Get a PSU by its ID"""
-        if not self.collection:
+        if self.collection is None:
             await self._init_collection()
         psu = await self.collection.find_one({"psu_id": psu_id}, {"_id": 0})
         if not psu:
@@ -31,7 +31,7 @@ class PSUController:
 
     async def create(self, psu: PSU):
         """Create a new PSU"""
-        if not self.collection:
+        if self.collection is None:
             await self._init_collection()
         psu_dict = psu.model_dump(exclude_none=True)
         result = await self.collection.insert_one(psu_dict)
@@ -41,7 +41,7 @@ class PSUController:
 
     async def update(self, psu_id: int, psu: UpdatePSU):
         """Update an existing PSU"""
-        if not self.collection:
+        if self.collection is None:
             await self._init_collection()
         update_data = psu.model_dump(exclude_none=True)
         if not update_data:
@@ -58,7 +58,7 @@ class PSUController:
 
     async def delete(self, psu_id: int):
         """Delete a PSU"""
-        if not self.collection:
+        if self.collection is None:
             await self._init_collection()
         result = await self.collection.delete_one({"psu_id": psu_id})
         if result.deleted_count == 0:
