@@ -8,6 +8,7 @@ class CPU(BaseModel):
     Socket: str = Field(..., min_length=1, description="CPU socket cannot be empty")
     brand: str = Field(..., min_length=1, description="CPU brand cannot be empty")
     imgUrl: str = Field(..., description="Official website URL")
+    quantity: int = Field(..., ge=0, description="CPU quantity must be non-negative")
 
     @field_validator('cpu_id')
     def check_cpu_id(cls, value):
@@ -21,6 +22,7 @@ class UpdateCPU(BaseModel):
     Socket: Optional[str] = None
     brand: Optional[str] = None
     imgUrl: Optional[str] = None
+    quantity: Optional[int] = None
 
 class Ram(BaseModel):
     ram_id: int = Field(..., description="Ram ID must start with 2 and have 5 digits")
@@ -32,6 +34,7 @@ class Ram(BaseModel):
     number_of_DIMMs: int = Field(..., ge=1, description="Number of DIMMs must be greater than 1")
     capacity_per_DIMM: int = Field(..., ge=0, description="Capacity per DIMM must be non-negative")
     imgUrl: str = Field(..., description="Official website URL")
+    quantity: int = Field(..., ge=0, description="RAM quantity must be non-negative")
 
     @field_validator('ram_id')
     def check_ram_id(cls, value):
@@ -48,6 +51,7 @@ class UpdateRam(BaseModel):
     number_of_DIMMs: Optional[int] = None
     capacity_per_DIMM: Optional[int] = None
     imgUrl: Optional[str] = None
+    quantity: Optional[int] = None
 
 class Mainboard(BaseModel):
     mainboard_id: int = Field(..., description="Mainboard ID must start with 3 and have 5 digits")
@@ -58,6 +62,7 @@ class Mainboard(BaseModel):
     socket: str = Field(..., min_length=1, description="Mainboard socket cannot be empty")
     brand: str = Field(..., min_length=1, description="Mainboard brand cannot be empty")
     imgUrl: str = Field(..., description="Official website URL")
+    quantity: int = Field(..., ge=0, description="Mainboard quantity must be non-negative")
 
     @field_validator('mainboard_id')
     def check_mainboard_id(cls, value):
@@ -73,6 +78,7 @@ class UpdateMainboard(BaseModel):
     socket: Optional[str] = None
     brand: Optional[str] = None
     imgUrl: Optional[str] = None
+    quantity: Optional[int] = None
 
 class SSD(BaseModel):
     ssd_id: int = Field(..., description="SSD ID must start with 42 and have 5 digits")
@@ -81,6 +87,7 @@ class SSD(BaseModel):
     brand: str = Field(..., min_length=1, description="SSD brand cannot be empty")
     size_GB: int = Field(..., ge=0, description="SSD size must be non-negative")
     imgUrl: str = Field(..., description="Official website URL")
+    quantity: int = Field(..., ge=0, description="SSD quantity must be non-negative")
 
     @field_validator('ssd_id')
     def check_ssd_id(cls, value):
@@ -94,6 +101,7 @@ class UpdateSSD(BaseModel):
     brand: Optional[str] = None
     size_GB: Optional[int] = None
     imgUrl: Optional[str] = None
+    quantity: Optional[int] = None
 
 class M2(BaseModel):
     m2_id: int = Field(..., description="M2 ID must start with 43 and have 5 digits")
@@ -104,6 +112,7 @@ class M2(BaseModel):
     brand: str = Field(..., min_length=1, description="M2 brand cannot be empty")
     capacity: int = Field(..., ge=0, description="M2 capacity must be non-negative")
     imgUrl: str = Field(..., description="Official website URL")
+    quantity: int = Field(..., ge=0, description="M2 quantity must be non-negative")
 
     @field_validator('m2_id')
     def check_m2_id(cls, value):
@@ -119,6 +128,7 @@ class UpdateM2(BaseModel):
     brand: Optional[str] = None
     capacity: Optional[int] = None
     imgUrl: Optional[str] = None
+    quantity: Optional[int] = None
 
 class GPU(BaseModel):
     gpu_id: int = Field(..., description="GPU ID must start with 5 and have 5 digits")
@@ -128,6 +138,7 @@ class GPU(BaseModel):
     ram_capacity_GB: int = Field(..., ge=0, description="GPU RAM capacity must be non-negative")
     brand: str = Field(..., min_length=1, description="GPU brand cannot be empty")
     imgUrl: str = Field(..., description="Official website URL")
+    quantity: int = Field(..., ge=0, description="GPU quantity must be non-negative")
 
     @field_validator('gpu_id')
     def check_gpu_id(cls, value):
@@ -142,6 +153,7 @@ class UpdateGPU(BaseModel):
     ram_capacity_GB: Optional[int] = None
     brand: Optional[str] = None
     imgUrl: Optional[str] = None
+    quantity: Optional[int] = None
 
 class Case(BaseModel):
     case_id: int = Field(..., description="Case ID must start with 6 and have 5 digits")
@@ -150,6 +162,7 @@ class Case(BaseModel):
     brand: str = Field(..., min_length=1, description="Case brand cannot be empty")
     support_mb: List[str] = Field(..., min_items=1, description="Supported motherboard types cannot be empty")
     imgUrl: str = Field(..., description="Official website URL")
+    quantity: int = Field(..., ge=0, description="Case quantity must be non-negative")
 
     @field_validator('case_id')
     def check_case_id(cls, value):
@@ -163,6 +176,7 @@ class UpdateCase(BaseModel):
     brand: Optional[str] = None
     support_mb: Optional[List[str]] = None
     imgUrl: Optional[str] = None
+    quantity: Optional[int] = None
 
 class PSU(BaseModel):
     psu_id: int = Field(..., description="PSU ID must start with 7 and have 5 digits")
@@ -171,8 +185,7 @@ class PSU(BaseModel):
     Max_Watt: int = Field(..., ge=0, description="PSU max wattage must be non-negative")
     brand: str = Field(..., min_length=1, description="PSU brand cannot be empty")
     certs: str = Field(..., min_length=1, description="PSU certificates cannot be empty")
-    # grade: int = Field(..., ge=0, le=5, description="PSU grade must be between 0 and 5")
-    
+    quantity: int = Field(..., ge=0, description="PSU quantity must be non-negative")
     imgUrl: str = Field(..., description="Official website URL")
 
     @field_validator('psu_id')
@@ -187,5 +200,5 @@ class UpdatePSU(BaseModel):
     Max_Watt: Optional[int] = None
     brand: Optional[str] = None
     certs: Optional[str] = None
-    # grade: Optional[int] = None
     imgUrl: Optional[str] = None
+    quantity: Optional[int] = None
