@@ -171,7 +171,8 @@ class PSU(BaseModel):
     Max_Watt: int = Field(..., ge=0, description="PSU max wattage must be non-negative")
     brand: str = Field(..., min_length=1, description="PSU brand cannot be empty")
     certs: str = Field(..., min_length=1, description="PSU certificates cannot be empty")
-    grade: int = Field(..., ge=0, le=5, description="PSU grade must be between 0 and 5")
+    # grade: int = Field(..., ge=0, le=5, description="PSU grade must be between 0 and 5")
+    
     imgUrl: str = Field(..., description="Official website URL")
 
     @field_validator('psu_id')
@@ -186,5 +187,5 @@ class UpdatePSU(BaseModel):
     Max_Watt: Optional[int] = None
     brand: Optional[str] = None
     certs: Optional[str] = None
-    grade: Optional[int] = None
+    # grade: Optional[int] = None
     imgUrl: Optional[str] = None
