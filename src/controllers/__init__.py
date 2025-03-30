@@ -5,6 +5,7 @@ from .storage_controller import StorageController
 from .gpu_controller import GPUController
 from .case_controller import CaseController
 from .psu_controller import PSUController
+from .order_controller import OrderController
 
 __all__ = [
     'CPUController',
@@ -13,5 +14,6 @@ __all__ = [
     'StorageController',
     'GPUController',
     'CaseController',
-    'PSUController'
+    'PSUController',
+    'OrderController'
 ]

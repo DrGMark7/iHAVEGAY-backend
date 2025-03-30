@@ -18,6 +18,7 @@ from src.routes import (
 )
 from src.routes.order_routes import router as order_router
 from src.routes.auth_routes import router as auth_router
+from src.routes.admin_routes import router as admin_router
 from src.config import settings
 
 # Initialize FastAPI app
@@ -103,6 +104,7 @@ app.include_router(case_router, prefix=api_prefix)
 app.include_router(psu_router, prefix=api_prefix)
 app.include_router(order_router, prefix=api_prefix)
 app.include_router(auth_router, prefix=api_prefix)
+app.include_router(admin_router, prefix=api_prefix)
 
 # Root endpoint
 @app.get("/")

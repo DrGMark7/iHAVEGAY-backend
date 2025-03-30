@@ -5,6 +5,7 @@ from .storage_routes import router as storage_router
 from .gpu_routes import router as gpu_router
 from .case_routes import router as case_router
 from .psu_routes import router as psu_router
+from .admin_routes import router as admin_router
 
 __all__ = [
     'cpu_router',
@@ -13,5 +14,6 @@ __all__ = [
     'storage_router',
     'gpu_router',
     'case_router',
-    'psu_router'
+    'psu_router',
+    'admin_router'
 ]
