@@ -162,3 +162,158 @@ async def get_top_customers(limit: int = Query(5, ge=1, le=20)):
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Error retrieving top customers: {str(e)}"
         )
+
+@router.get(
+    "/products/top-selling",
+    response_model=List[Dict[str, Any]],
+    summary="Top selling products",
+    description="Shows the top 5 best-selling products by quantity sold"
+)
+async def get_top_selling_products(limit: int = Query(5, ge=1, le=20)):
+    """
+    Retrieve the top selling products
+    
+    Parameters:
+        limit (int): Number of items to display (default: 5, max: 20)
+        
+    Returns:
+        List[Dict]: A list of top selling products:
+        - product_id: Product identifier
+        - title: Product name
+        - category: Product category
+        - sold_quantity: Number of units sold
+        - price: Product price
+    """
+    try:
+        return await controller.get_top_selling_products(limit)
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error retrieving top selling products: {str(e)}"
+        )
+
+@router.get(
+    "/products/compatible-mainboards/{cpu_id}",
+    response_model=List[Dict[str, Any]],
+    summary="Compatible mainboards for CPU",
+    description="Shows mainboards compatible with the specified CPU based on socket"
+)
+async def get_compatible_mainboards(cpu_id: str):
+    """
+    Find mainboards compatible with the specified CPU
+    
+    Parameters:
+        cpu_id (str): CPU identifier to find compatible mainboards for
+        
+    Returns:
+        List[Dict]: A list of compatible mainboards:
+        - mainboard_id: Mainboard identifier
+        - title: Mainboard name
+        - socket: Socket type
+        - price: Price
+        - quantity: Available stock
+    """
+    try:
+        return await controller.get_compatible_mainboards(cpu_id)
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error retrieving compatible mainboards: {str(e)}"
+        )
+
+@router.get(
+    "/products/price-range",
+    response_model=List[Dict[str, Any]],
+    summary="Products by price range",
+    description="Shows products within the specified price range and category"
+)
+async def get_products_by_price_range(
+    category: str = Query(..., description="Product category (CPU, RAM, GPU, etc.)"),
+    min_price: float = Query(0, description="Minimum price"),
+    max_price: float = Query(1000000, description="Maximum price"),
+    limit: int = Query(10, ge=1, le=50, description="Maximum number of results")
+):
+    """
+    Find products within a specified price range
+    
+    Parameters:
+        category (str): Product category (CPU, RAM, GPU, etc.)
+        min_price (float): Minimum price to search for
+        max_price (float): Maximum price to search for
+        limit (int): Maximum number of results (default: 10, max: 50)
+        
+    Returns:
+        List[Dict]: A list of products within the specified price range:
+        - product_id: Product identifier
+        - title: Product name
+        - price: Price
+        - quantity: Available stock
+    """
+    try:
+        return await controller.get_products_by_price_range(category, min_price, max_price, limit)
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error retrieving products by price range: {str(e)}"
+        )
+
+@router.get(
+    "/analytics/frequently-bought-together",
+    response_model=List[Dict[str, Any]],
+    summary="Frequently bought together products",
+    description="Shows pairs of products that are most frequently purchased together"
+)
+async def get_frequently_bought_together(limit: int = Query(5, ge=1, le=20)):
+    """
+    Find pairs of products that are frequently purchased together
+    
+    Parameters:
+        limit (int): Number of product pairs to display (default: 5, max: 20)
+        
+    Returns:
+        List[Dict]: A list of product pairs most frequently purchased together:
+        - product_pair: The product pair
+          - product1: First product information
+          - product2: Second product information
+        - frequency: Number of times purchased together
+    """
+    try:
+        return await controller.get_frequently_bought_together(limit)
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error retrieving frequently bought together products: {str(e)}"
+        )
+
+@router.get(
+    "/products/recommended",
+    response_model=List[Dict[str, Any]],
+    summary="Recommended budget products",
+    description="Shows the top 5 recommended products with the lowest prices"
+)
+async def get_recommended_products(
+    category: str = Query(None, description="Product category (all categories if not specified)"),
+    limit: int = Query(5, ge=1, le=20)
+):
+    """
+    Retrieve recommended products with the lowest prices
+    
+    Parameters:
+        category (str, optional): Product category to filter by (if not specified, will include all categories)
+        limit (int): Number of items to display (default: 5, max: 20)
+        
+    Returns:
+        List[Dict]: A list of recommended products with the lowest prices:
+        - product_id: Product identifier
+        - title: Product name
+        - category: Product category
+        - price: Price
+        - quantity: Available stock
+    """
+    try:
+        return await controller.get_recommended_products(category, limit)
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Error retrieving recommended products: {str(e)}"
+        )
