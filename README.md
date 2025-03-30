@@ -39,48 +39,61 @@ This is the backend API for the iHAVEGAY Project, a computer hardware e-commerce
 ```
 iHAVEGAY-backend/
 │
-├── src/                        # Source code directory
-│   ├── __init__.py             # Package initialization
-│   ├── config.py               # Configuration settings
-│   │
-│   ├── controllers/            # Business logic layer
-│   │   ├── admin_controller.py # Admin dashboard functionality
-│   │   ├── auth_controller.py  # Authentication logic
-│   │   ├── order_controller.py # Order management
-│   │   ├── product_controller.py # Product management
-│   │   └── user_controller.py  # User management
-│   │
-│   ├── database/               # Database configuration and connection
-│   │   ├── __init__.py
-│   │   └── database.py         # MongoDB connection setup
-│   │
-│   ├── models/                 # Data models and schemas
-│   │   ├── __init__.py
-│   │   ├── order_model.py      # Order data structures
-│   │   ├── product_model.py    # Product data structures
-│   │   └── user_model.py       # User data structures
-│   │
-│   ├── routes/                 # API routes and endpoints
-│   │   ├── __init__.py
-│   │   ├── admin_routes.py     # Admin dashboard endpoints
-│   │   ├── auth_routes.py      # Authentication endpoints
-│   │   ├── order_routes.py     # Order management endpoints
-│   │   ├── product_routes.py   # Product endpoints
-│   │   └── user_routes.py      # User management endpoints
-│   │
-│   ├── services/               # External service integrations
-│   │   ├── __init__.py
-│   │   ├── email_service.py    # Email notifications
-│   │   └── payment_service.py  # Payment processing
-│   │
-│   └── utils/                  # Utility functions and helpers
-│       ├── __init__.py
-│       ├── auth_utils.py       # Authentication utilities
-│       └── validators.py       # Input validation functions
-│
-├── app.py                      # Main application entry point
+├── main.py                     # Main application entry point
+├── config.yaml                 # Configuration file
 ├── requirements.txt            # Project dependencies
-└── README.md                   # Project documentation
+├── README.md                   # Project documentation
+├── scrap.js                    # Scraping utilities
+├── test                        # Test directory
+│
+└── src/                        # Source code directory
+    ├── __init__.py             # Package initialization
+    ├── config.py               # Configuration settings
+    │
+    ├── controllers/            # Business logic layer
+    │   ├── __init__.py
+    │   ├── admin_controller.py # Admin dashboard functionality
+    │   ├── case_controller.py  # PC case management
+    │   ├── cpu_controller.py   # CPU management
+    │   ├── gpu_controller.py   # GPU management
+    │   ├── mainboard_controller.py # Motherboard management
+    │   ├── order_controller.py # Order management
+    │   ├── psu_controller.py   # Power supply management
+    │   ├── ram_controller.py   # RAM management
+    │   └── storage_controller.py # Storage management
+    │
+    ├── database/               # Database configuration and connection
+    │   ├── __init__.py
+    │   ├── database.py         # MongoDB connection setup
+    │   ├── manage_database.py  # Database management utilities
+    │   └── json/               # JSON data files
+    │
+    ├── models/                 # Data models and schemas
+    │   ├── __init__.py
+    │   ├── hardware_models.py  # Hardware component models
+    │   └── order_models.py     # Order data structures
+    │
+    ├── routes/                 # API routes and endpoints
+    │   ├── __init__.py
+    │   ├── admin_routes.py     # Admin dashboard endpoints
+    │   ├── auth_routes.py      # Authentication endpoints
+    │   ├── case_routes.py      # PC case endpoints
+    │   ├── cpu_routes.py       # CPU endpoints
+    │   ├── gpu_routes.py       # GPU endpoints
+    │   ├── mainboard_routes.py # Motherboard endpoints
+    │   ├── order_routes.py     # Order management endpoints
+    │   ├── psu_routes.py       # Power supply endpoints
+    │   ├── ram_routes.py       # RAM endpoints
+    │   └── storage_routes.py   # Storage endpoints
+    │
+    ├── services/               # Service layer
+    │   ├── __init__.py
+    │   ├── hardware_service.py # Hardware component services
+    │   └── order_service.py    # Order processing services
+    │
+    └── utils/                  # Utility functions and helpers
+        ├── __init__.py
+        └── auth.py             # Authentication utilities
 ```
 
 ## API Endpoints
@@ -91,26 +104,71 @@ The API is organized into the following main sections:
 
 - `POST /api/v1/auth/register` - Register a new user
 - `POST /api/v1/auth/login` - User login
-- `POST /api/v1/auth/logout` - User logout
-- `GET /api/v1/auth/verify/{token}` - Verify email
 
-### Products
+### Hardware Components
 
-- `GET /api/v1/products` - List all products
-- `GET /api/v1/products/{product_id}` - Get product details
-- `GET /api/v1/products/category/{category}` - Filter products by category
+#### CPUs
+
+- `GET /api/v1/cpus` - Get all CPUs
+- `GET /api/v1/cpus/{cpu_id}` - Get CPU by ID
+- `POST /api/v1/cpus` - Create new CPU
+- `PATCH /api/v1/cpus/{cpu_id}` - Update CPU by ID
+- `DELETE /api/v1/cpus/{cpu_id}` - Delete CPU by ID
+
+#### RAM
+
+- `GET /api/v1/rams` - Get all RAM modules
+- `GET /api/v1/rams/{ram_id}` - Get RAM by ID
+- `POST /api/v1/rams` - Create new RAM
+- `PATCH /api/v1/rams/{ram_id}` - Update RAM by ID
+- `DELETE /api/v1/rams/{ram_id}` - Delete RAM by ID
+
+#### Motherboards
+
+- `GET /api/v1/mainboards` - Get all motherboards
+- `GET /api/v1/mainboards/{mainboard_id}` - Get motherboard by ID
+- `POST /api/v1/mainboards` - Create new motherboard
+- `PATCH /api/v1/mainboards/{mainboard_id}` - Update motherboard by ID
+- `DELETE /api/v1/mainboards/{mainboard_id}` - Delete motherboard by ID
+
+#### GPUs
+
+- `GET /api/v1/gpus` - Get all GPUs
+- `GET /api/v1/gpus/{gpu_id}` - Get GPU by ID
+- `POST /api/v1/gpus` - Create new GPU
+- `PATCH /api/v1/gpus/{gpu_id}` - Update GPU by ID
+- `DELETE /api/v1/gpus/{gpu_id}` - Delete GPU by ID
+
+#### Cases
+
+- `GET /api/v1/cases` - Get all PC cases
+- `GET /api/v1/cases/{case_id}` - Get case by ID
+- `POST /api/v1/cases` - Create new case
+- `PATCH /api/v1/cases/{case_id}` - Update case by ID
+- `DELETE /api/v1/cases/{case_id}` - Delete case by ID
+
+#### Power Supplies (PSUs)
+
+- `GET /api/v1/psus` - Get all power supplies
+- `GET /api/v1/psus/{psu_id}` - Get PSU by ID
+- `POST /api/v1/psus` - Create new PSU
+- `PATCH /api/v1/psus/{psu_id}` - Update PSU by ID
+- `DELETE /api/v1/psus/{psu_id}` - Delete PSU by ID
+
+#### Storage (SSDs and M.2)
+
+- `GET /api/v1/storage` - Get all storage devices
+- `GET /api/v1/storage/{storage_id}` - Get storage by ID
+- `POST /api/v1/storage` - Create new storage device
+- `PATCH /api/v1/storage/{storage_id}` - Update storage by ID
+- `DELETE /api/v1/storage/{storage_id}` - Delete storage by ID
 
 ### Orders
 
-- `POST /api/v1/orders` - Create a new order
-- `GET /api/v1/orders/{order_id}` - Get order details
-- `PUT /api/v1/orders/{order_id}/status` - Update order status
-
-### Users
-
-- `GET /api/v1/users/profile` - Get user profile
-- `PUT /api/v1/users/profile` - Update user profile
-- `GET /api/v1/users/orders` - Get user's order history
+- `POST /api/v1/orders/create-with-details` - Create a new order
+- `GET /api/v1/orders/{order_id}` - Get order by ID
+- `PATCH /api/v1/orders/{order_id}/status` - Update order status
+- `PATCH /api/v1/orders/{order_id}/shipping` - Update shipping details
 
 ### Admin Dashboard
 
@@ -151,18 +209,10 @@ To start development:
    ```
 3. Access the API documentation at: http://localhost:8000/docs
 
-## Testing
-
-Run tests with:
-
-```bash
-pytest
-```
-
 ## License
 
 This project is proprietary and confidential.
 
 ## Contributors
 
-- Developer Team
+- Napassakorn Saenieo
