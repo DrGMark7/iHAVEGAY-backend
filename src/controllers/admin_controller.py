@@ -17,7 +17,7 @@ class AdminController:
         
         # Initialize hardware collections
         hardware_types = [
-            "CPUs", "RAMs", "Mainboards", "GPUs", "Cases", "PSUs", "SSDs", "M2s"
+            "CPUs", "Rams", "Mainboards", "GPUs", "Cases", "PSUs", "SSDs", "M2s"
         ]
         for hw_type in hardware_types:
             self.hardware_collections[hw_type] = await Database.get_collection(hw_type)
@@ -86,7 +86,7 @@ class AdminController:
         # Define hardware collections mapping
         hardware_mapping = [
             {"collection_name": "CPUs", "category": "CPU", "id_field": "cpu_id"},
-            {"collection_name": "RAMs", "category": "RAM", "id_field": "ram_id"},
+            {"collection_name": "Rams", "category": "RAM", "id_field": "ram_id"},
             {"collection_name": "Mainboards", "category": "Mainboard", "id_field": "mainboard_id"},
             {"collection_name": "GPUs", "category": "GPU", "id_field": "gpu_id"},
             {"collection_name": "Cases", "category": "Case", "id_field": "case_id"},
@@ -110,29 +110,27 @@ class AdminController:
                 pipeline = [
                     {
                         "$match": {
-                            "quantity": {"$gt": 0}
+                        "quantity": { "$lt": 5 }
                         }
                     },
                     {
-                        "$sort": {"quantity": 1}
-                    },
-                    {
-                        "$limit": limit
+                        "$sort": { "quantity": 1 }
                     },
                     {
                         "$project": {
-                            "_id": 0,
-                            "product_id": f"${id_field}",
-                            "title": 1,
-                            "stock_quantity": "$quantity",
-                            "price": 1,
-                            "category": {"$literal": category}
+                        "_id": 0,
+                        "product_id": f"${id_field}",
+                        "title": 1,
+                        "quantity": 1,
+                        "price": 1,
+                        "category": { "$literal": category }
                         }
                     }
                 ]
                 
                 cursor = collection.aggregate(pipeline)
-                result = await cursor.to_list(length=limit)
+                # result = await cursor.to_list(length=limit)
+                result = await cursor.to_list()
                 all_low_stock.extend(result)
             except Exception as e:
                 print(f"Error fetching low stock products for {hw['category']}: {e}")
@@ -143,7 +141,7 @@ class AdminController:
         all_low_stock.sort(key=lambda x: x.get("stock_quantity", 999999))
         
         # Return only the top N results
-        return all_low_stock[:limit]
+        return all_low_stock
 
     async def get_recent_orders(self, limit: int = 5):
         """
