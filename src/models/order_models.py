@@ -14,7 +14,6 @@ class ComputerSet(BaseModel):
 
 class ShippingDetails(BaseModel):
     user_id: int = Field(..., description="User ID must start with 1 and have 5 digits")
-    order_id: int = Field(..., description="Order ID must have 5 digits")
     name: str = Field(..., description="Recipient's name")
     phone: str = Field(..., description="Recipient's phone number")
     email: str = Field(..., pattern=r"^\w+@\w+\.\w+$", description="Recipient's email address")
