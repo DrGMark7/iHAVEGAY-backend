@@ -9,6 +9,10 @@ from .hardware_models import (
     PSU, UpdatePSU
 )
 
+from .order_models import (
+    ComputerSet, ShippingDetails, Order
+)
+
 __all__ = [
     'CPU', 'UpdateCPU',
     'Ram', 'UpdateRam',
@@ -17,5 +21,6 @@ __all__ = [
     'M2', 'UpdateM2',
     'GPU', 'UpdateGPU',
     'Case', 'UpdateCase',
-    'PSU', 'UpdatePSU'
+    'PSU', 'UpdatePSU',
+    'ComputerSet', 'ShippingDetails', 'Order'
 ] 
