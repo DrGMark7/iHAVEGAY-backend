@@ -2,3 +2,7 @@ pymongo
 fastapi
 pandas
 numpy
+pydantic
+python-jose
+python-dotenv
+pydantic-settings
