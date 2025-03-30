@@ -43,8 +43,8 @@ class AdminController:
                         "order_date": {
                             "$gte": start_of_day,
                             "$lte": end_of_day
-                        },
-                        "status": {"$in": ["Confirmed", "Delivered"]}
+                        }
+                        # "status": {"$in": ["Confirmed", "Delivered"]}
                     }
                 },
                 {
@@ -200,7 +200,7 @@ class AdminController:
             
         hardware_types = [
             {"name": "CPUs", "category": "CPU"},
-            {"name": "RAMs", "category": "RAM"},
+            {"name": "Rams", "category": "RAM"},
             {"name": "Mainboards", "category": "Mainboard"},
             {"name": "GPUs", "category": "GPU"},
             {"name": "Cases", "category": "Case"},
@@ -272,7 +272,7 @@ class AdminController:
             }
         }
 
-    async def get_top_customers(self, limit: int = 5):
+    async def get_top_customers(self, limit: int = 5):  
         """
         Top 5 customers by total order count
         """
@@ -288,7 +288,7 @@ class AdminController:
                 }
             },
             {
-                "$sort": {"order_count": -1}
+                "$sort": {"total_spent": -1}
             },
             {
                 "$limit": limit
