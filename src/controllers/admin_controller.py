@@ -107,40 +107,29 @@ class AdminController:
                 category = hw["category"]
                 id_field = hw["id_field"]
                 
-                pipeline = [
-                    {
-                        "$match": {
-                        "quantity": { "$lt": 5 }
-                        }
-                    },
-                    {
-                        "$sort": { "quantity": 1 }
-                    },
-                    {
-                        "$project": {
-                        "_id": 0,
-                        "product_id": f"${id_field}",
-                        "title": 1,
-                        "quantity": 1,
-                        "price": 1,
-                        "category": { "$literal": category }
-                        }
-                    }
-                ]
+                # Find products with low stock
+                cursor = collection.find(
+                    {"quantity": {"$lt": 5}},
+                    {"_id": 0}  # Exclude only _id, include all other fields
+                ).sort("quantity", 1)
                 
-                cursor = collection.aggregate(pipeline)
-                result = await cursor.to_list()
-                all_low_stock.extend(result)
+                results = await cursor.to_list()
+                
+                # Add category field for standardization
+                for product in results:
+                    product["category"] = category
+                
+                all_low_stock.extend(results)
             except Exception as e:
                 print(f"Error fetching low stock products for {hw['category']}: {e}")
                 # Continue to next collection if there's an error
                 continue
         
         # Sort combined results by stock quantity
-        all_low_stock.sort(key=lambda x: x.get("stock_quantity", 999999))
+        all_low_stock.sort(key=lambda x: x.get("quantity", 999999))
         
         # Return only the top N results
-        return all_low_stock
+        return all_low_stock[:limit]
 
     async def get_recent_orders(self, limit: int = 5):
         """
@@ -373,7 +362,7 @@ class AdminController:
             # First get all hardware types in the order_details
             hw_types = [
                 {"field": "cpu_id", "category": "CPU"},
-                {"field": "ram_id", "category": "RAM"},
+                {"field": "ram_id", "category": "Ram"},
                 {"field": "mainboard_id", "category": "Mainboard"},
                 {"field": "gpu_id", "category": "GPU"},
                 {"field": "case_id", "category": "Case"},
@@ -401,7 +390,8 @@ class AdminController:
                         "$group": {
                             "_id": f"$order_details.{field}",
                             "sold_quantity": { "$sum": 1 },
-                            "count": { "$sum": 1 }
+                            "count": { "$sum": 1 },
+                            "product_title": { "$first": "$order_details.title" }
                         }
                     },
                     # Add category information
@@ -410,7 +400,7 @@ class AdminController:
                             "_id": 0,
                             "product_id": "$_id",
                             "category": { "$literal": category },
-                            "sold_quantity": 1
+                            "sold_quantity": 1,
                         }
                     }
                 ]
@@ -428,12 +418,21 @@ class AdminController:
                                 for item in results:
                                     id_field = field
                                     product = await collection.find_one({id_field: item["product_id"]})
+                                    #! Debug RAM 20001
+                                    # if category == "RAM" and item["product_id"] == 20001:
+                                    #     print(product)
                                     if product:
                                         item["title"] = product.get("title", "Unknown")
                                         item["price"] = product.get("price", 0)
+                                        item["imgUrl"] = product.get("imgUrl", "")
+                                        item["brand"] = product.get("brand", "")
+                                        item["quantity"] = product.get("quantity", 0)
                                     else:
                                         item["title"] = f"Unknown {category}"
                                         item["price"] = 0
+                                        item["imgUrl"] = product.get("imgUrl", "")
+                                        item["brand"] = product.get("brand", "")
+                                        item["quantity"] = product.get("quantity", 0)
                         
                     all_results.extend(results)
                 except Exception as e:
@@ -461,7 +460,8 @@ class AdminController:
                         "category": "$_id.category",
                         "title": "$product_title",
                         "sold_quantity": 1,
-                        "price": 1
+                        "price": 1,
+                        "imgUrl": 1
                     }
                 }
             ])
@@ -507,18 +507,12 @@ class AdminController:
             raise HTTPException(status_code=400, detail="CPU socket information is missing")
         
         try:
-            # Find mainboards with matching socket
+            # Find mainboards with matching socket, excluding only _id
             cursor = mainboard_collection.find(
                 {"socket": socket},
-                {
-                    "_id": 0,
-                    "mainboard_id": 1,
-                    "title": 1,
-                    "socket": 1,
-                    "price": 1,
-                    "quantity": 1
-                }
-            )            
+                {"_id": 0}  # Exclude only _id, include all other fields
+            )
+            
             # Get results
             results = await cursor.to_list(length=100)
             
@@ -544,9 +538,9 @@ class AdminController:
         category_mapping = {
             "CPU": "CPUs",
             "RAM": "Rams",
-            "Mainboard": "Mainboards",
+            "MAINBOARD": "Mainboards",
             "GPU": "GPUs",
-            "Case": "Cases",
+            "CASE": "Cases",
             "PSU": "PSUs",
             "SSD": "SSDs",
             "M2": "M2s"
@@ -571,20 +565,13 @@ class AdminController:
             }
         }
         
-        projection = {
-            "_id": 0,
-            id_field: 1,
-            "title": 1,
-            "price": 1,
-            "quantity": 1
-        }
-        
-        cursor = collection.find(query, projection).sort("price", 1).limit(limit)
+        # Only exclude _id, include all other fields
+        cursor = collection.find(query, {"_id": 0}).sort("price", 1).limit(limit)
         results = await cursor.to_list(length=limit)
         
-        # Standardize the field names
+        # Add standard category field
         for item in results:
-            item["product_id"] = item.pop(id_field, None)
+            item["category"] = category
         
         return results
 
@@ -599,9 +586,9 @@ class AdminController:
         hw_types = [
             {"field": "cpu_id", "category": "CPU", "collection": "CPUs"},
             {"field": "ram_id", "category": "RAM", "collection": "Rams"},
-            {"field": "mainboard_id", "category": "Mainboard", "collection": "Mainboards"},
+            {"field": "mainboard_id", "category": "MAINBOARDS", "collection": "Mainboards"},
             {"field": "gpu_id", "category": "GPU", "collection": "GPUs"},
-            {"field": "case_id", "category": "Case", "collection": "Cases"},
+            {"field": "case_id", "category": "CASES", "collection": "Cases"},
             {"field": "psu_id", "category": "PSU", "collection": "PSUs"},
             {"field": "ssd_id", "category": "SSD", "collection": "SSDs"},
             {"field": "m2_id", "category": "M2", "collection": "M2s"}
@@ -661,7 +648,7 @@ class AdminController:
                 # Find all products of this type
                 products_cursor = collection.find(
                     {}, 
-                    {"_id": 0, id_field: 1, "title": 1}
+                    # {"_id": 0, id_field: 1, "title": 1}
                 )
                 
                 products = await products_cursor.to_list(length=100)
@@ -673,8 +660,14 @@ class AdminController:
                         product_info[f"{id_field}:{product_id}"] = {
                             "product_id": product_id,
                             "title": product.get("title", f"Unknown {hw['category']}"),
-                            "category": hw["category"]
+                            "category": hw["category"],
+                            "imgUrl": product.get("imgUrl", ""),
+                            "brand": product.get("brand", ""),
+                            "quantity": product.get("quantity", 0),
+                            "price": product.get("price", 0)
                         }
+                        
+
             except Exception as e:
                 print(f"Error retrieving products for {hw['category']}: {e}")
                 continue
@@ -819,16 +812,8 @@ class AdminController:
                             { "$toString": "$same_order.order_details.product_id" }
                         ]
                     },
-                    "product1": {
-                        "product_id": "$product1.product_id",
-                        "title": "$product1.title",
-                        "category": "$product1.category"
-                    },
-                    "product2": {
-                        "product_id": "$same_order.order_details.product_id",
-                        "title": "$same_order.order_details.title",
-                        "category": "$same_order.order_details.category"
-                    }
+                    "product1": "$product1",
+                    "product2": "$same_order.order_details"
                 }
             },
             # Count frequency
@@ -909,8 +894,6 @@ class AdminController:
                     print(f"Collection {hw['collection_name']} is None")
                     continue
                 
-                id_field = hw["id_field"]
-                
                 # Check if collection has any data
                 count = await collection.count_documents({})
                 if count == 0:
@@ -920,27 +903,16 @@ class AdminController:
                 # Find products with prices and sort by price
                 cursor = collection.find(
                     {"price": {"$exists": True, "$gt": 0}}, 
-                    {
-                        "_id": 0,
-                        id_field: 1,
-                        "title": 1,
-                        "price": 1,
-                        "quantity": 1
-                    }
+                    {"_id": 0}  # Exclude only _id, include all other fields
                 ).sort("price", 1).limit(5 if category else 2)
                 
                 results = await cursor.to_list(length=10)
                 
-                # Transform results to standardized format
+                # Add category field for standardization
                 for item in results:
-                    if item.get(id_field) is not None:
-                        all_products.append({
-                            "product_id": item.get(id_field),
-                            "title": item.get("title", f"Unknown {hw['category']}"),
-                            "price": item.get("price", 0),
-                            "quantity": item.get("quantity", 0),
-                            "category": hw["category"]
-                        })
+                    item["category"] = hw["category"]
+                
+                all_products.extend(results)
                 
             except Exception as e:
                 print(f"Error processing {hw['category']}: {e}")
@@ -949,7 +921,7 @@ class AdminController:
         # Sort by price ascending
         all_products.sort(key=lambda x: x.get("price", float('inf')))
         
-        # If no products found, return an empty list instead of sample data
+        # If no products found, return an empty list
         if not all_products:
             return []
         
